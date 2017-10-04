@@ -15,7 +15,8 @@ Servo gimbalServoX, gimbalServoY; // servo objects
 // initial gimball servo positions
 const int GimbalInitPosX = 90;
 const int GimbalInitPosY = 90;
-const int GimbalStep;
+const int GimbalStepX = 5;
+const int GimbalStepY = 5;
 int gimbalPosX = 90;
 int gimbalPosY = 90;
 
@@ -52,6 +53,13 @@ void adjustGimbal(stepsize, isGimbal_Y) {
   }
 }
 
+void gimbalStandardPosition() {
+  gimbalPosX = GimbalInitPosX;
+  gimbalServoX.write(GimbalInitPosX);
+  gimbalPosY = GimbalInitPosY;
+  gimbalServoY.write(GimbalInitPosY);
+}
+
 void processInputBuffer(char cmd) {
   switch (cmd){
     case '8': // DC Motors full forward
@@ -64,8 +72,7 @@ void processInputBuffer(char cmd) {
       outputsToZero();
       break;
     case 's': // back to init position
-      adjustGimbal(gimbalServoY, GimbalInitPosX);
-      adjustGimbal(gimbalServoY, GimbalInitPosY);
+      gimbalStandardPosition();
     case 'w': // incease posY w/ 5 degrees
       adjustGimbal(GimbalStepX, true);
       break;
@@ -93,8 +100,7 @@ void setup() {
   gimbalServoX.attach(gimbalPinX);
   gimbalServoY.attach(gimbalPinY);
 
-  gimbalServoX.write(GimbalInitPosX); // move to middle position
-  gimbalServoY.write(GimbalInitPosY);
+  gimbalStandardPosition(); // move gimbal to standard position
   
   // clear input buffer
   while (Serial1.available()) {
