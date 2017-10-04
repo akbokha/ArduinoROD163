@@ -67,16 +67,16 @@ void processInputBuffer(char cmd) {
       adjustGimbal(gimbalServoY, GimbalInitPosX);
       adjustGimbal(gimbalServoY, GimbalInitPosY);
     case 'w': // incease posY w/ 5 degrees
-      adjustGimbal(GimbalStepX, true);
+      adjustGimbal(gimbalServoY, GimbalStepX, true);
       break;
     case 'z': // decrease posY w/ 5 degrees
-      adjustGimbal((-GimbalStepX), true);
+      adjustGimbal(gimbalServoY, (-GimbalStepX), true);
       break;
     case 'a': // incease posX w/ 5 degrees
-      adjustGimbal(GimbalStepY, false);
+      adjustGimbal(gimbalServoX, GimbalStepY, false);
       break;
     case 'd': // decrease posX w/ 5 degrees
-      adjustGimbal((- GimbalStepY), false);
+      adjustGimbal(gimbalServoX, (- GimbalStepY), false);
       break;
     default: // key is not configured
       Serial.println("command not supported");
@@ -103,6 +103,7 @@ void setup() {
   // outputs to zero
   outputsToZero()
 } // end setup code
+
 
 
 void loop() {
