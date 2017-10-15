@@ -113,16 +113,13 @@ void processInputBuffer(char cmd) {
       adjustGimbal((- GimbalStepY), false);
       break;
     case 'm': // decrease posX w/ 5 degrees
-      gearSpeed += 5;
-      gearServo.write(gearSpeed);
-      break;
-    case 'b': // decrease posX w/ 5 degrees
-      gearSpeed -= 5;
-      gearServo.write(gearSpeed);
+      gearServo.write(110);
       break;
     case 'n': // decrease posX w/ 5 degrees
-      gearSpeed = 95;
-      gearServo.write(gearSpeed);
+      gearServo.write(95);
+      break;
+    case 'b': // decrease posX w/ 5 degrees
+      gearServo.write(80);
       break;
     default: // key is not configured
       Serial.println("command not supported");
@@ -148,8 +145,8 @@ void setup() {
   }
   //outputs to zero
   outputsToZero();
-  gearServo.attach(pwm5);
-  gearServo.write(gearSpeed);
+  gearServo.attach(pwm6);
+  gearServo.write();
 } // end setup code
 
 

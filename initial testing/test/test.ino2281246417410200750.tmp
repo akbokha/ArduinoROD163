@@ -4,12 +4,9 @@
 int pwm1 = 3;
 int pwm2 = 5;
 int pwm3 = 6;
-int pwm4 = 9;
-int pwm5 = 10;
-int pwm6 = 11;
+int pwm4 = 11;
+int pwm5 =9;
 int ledPin = 13;
-
-int gearSpeed = 95;
 
 
 // pins on Arduino that will control servo through signals
@@ -17,7 +14,7 @@ int gimbalPinX = A0;
 int gimbalPinY = A1;
 
 Servo gimbalServoX, gimbalServoY; // servo objects
-Servo gearServo;
+//Servo gearServo;
 
 // initial gimball servo positions
 const int GimbalInitPosX = 90;
@@ -113,16 +110,13 @@ void processInputBuffer(char cmd) {
       adjustGimbal((- GimbalStepY), false);
       break;
     case 'm': // decrease posX w/ 5 degrees
-      gearSpeed += 5;
-      gearServo.write(gearSpeed);
-      break;
-    case 'b': // decrease posX w/ 5 degrees
-      gearSpeed -= 5;
-      gearServo.write(gearSpeed);
+      //gearServo.write(110);
       break;
     case 'n': // decrease posX w/ 5 degrees
-      gearSpeed = 95;
-      gearServo.write(gearSpeed);
+      //gearServo.write(90);
+      break;
+    case 'b': // decrease posX w/ 5 degrees
+      //gearServo.write(80);
       break;
     default: // key is not configured
       Serial.println("command not supported");
@@ -148,8 +142,8 @@ void setup() {
   }
   //outputs to zero
   outputsToZero();
-  gearServo.attach(pwm5);
-  gearServo.write(gearSpeed);
+  //gearServo.attach(pwm5);
+  //gearServo.write(0);
 } // end setup code
 
 
