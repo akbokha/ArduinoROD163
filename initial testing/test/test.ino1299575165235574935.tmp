@@ -4,8 +4,7 @@
 int pwm1 = 3;
 int pwm2 = 5;
 int pwm3 = 6;
-int pwm4 = 11;
-int pwm5 =9;
+int pwm4 = 9;
 int ledPin = 13;
 
 
@@ -14,7 +13,6 @@ int gimbalPinX = A0;
 int gimbalPinY = A1;
 
 Servo gimbalServoX, gimbalServoY; // servo objects
-Servo gearServo;
 
 // initial gimball servo positions
 const int GimbalInitPosX = 90;
@@ -24,7 +22,7 @@ const int GimbalStepY = 20;
 int gimbalPosX = 90;
 int gimbalPosY = 90;
 
-int fullspeed = 120; // max value for DC motor to achieve fullspeed
+int fullspeed = 255; // max value for DC motor to achieve fullspeed
 
 void outputsToZero() {
   analogWrite(pwm1, 0);
@@ -81,20 +79,22 @@ void gimbalStandardPosition() {
 void processInputBuffer(char cmd) {
   switch (cmd){
     case '8': // DC Motors full forward
-        fullForward();
-    break;
+      digitalWrite(ledPin, HIGH);
+      fullForward();
+      break;
     case '2': // DC Motors full backward
-        fullBackward();
-    break;
+      fullBackward();
+      digitalWrite(ledPin, LOW);
+      break;
     case '4': // DC Motors full backward
-        left();
-    break;
+      left();
+      break;
     case '6': // DC Motors full backward
-        right();
-    break;
+      right();
+      break;
     case '0':  // DC Motors reset outputs to 0
-        outputsToZero();
-    break;
+      outputsToZero();
+      break;
     case 's': // back to init position
       gimbalStandardPosition();
     case 'w': // incease posY w/ 5 degrees
@@ -108,15 +108,6 @@ void processInputBuffer(char cmd) {
       break;
     case 'd': // decrease posX w/ 5 degrees
       adjustGimbal((- GimbalStepY), false);
-      break;
-    case 'm': // decrease posX w/ 5 degrees
-      gearServo.write(110);
-      break;
-    case 'n': // decrease posX w/ 5 degrees
-      gearServo.write(90);
-      break;
-    case 'b': // decrease posX w/ 5 degrees
-      gearServo.write(80);
       break;
     default: // key is not configured
       Serial.println("command not supported");
@@ -141,9 +132,7 @@ void setup() {
     Serial1.read();
   }
   // outputs to zero
-  // outputsToZero();
-  //gearServo.attach(pwm5);
-  //gearServo.write(0);
+  outputsToZero();
 } // end setup code
 
 
@@ -151,10 +140,10 @@ void loop() {
   if (Serial1.available() > 0) {
     char command = Serial1.read();
     processInputBuffer(command);
-// } else if (Serial.available() > 0) { // USB
-  //  char command = Serial.read();
-    //processInputBuffer(command);
- }
+ } else if (Serial.available() > 0) { // USB
+    char command = Serial.read();
+    82828282828processInputBuffer(command);
+  }
 } // end loop code
 
 
