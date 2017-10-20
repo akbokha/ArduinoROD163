@@ -1,12 +1,16 @@
 // author: Abdel K. Bokharouss - October 2017
 #include <Servo.h> // servo library
 
+// PWMs used by the DC Motors
 int pwm1 = 3;
 int pwm2 = 5;
-int pwm3 = 6;
-int pwm4 = 9;
+int pwm3 = 9;
+int pwm4 = 6;
+
+// PWMs used by continuous servos
 int pwm5 = 10;
 int pwm6 = 11;
+
 int ledPin = 13;
 
 // pins on Arduino that will control servo through signals
@@ -70,20 +74,20 @@ void fullBackward() {
 }
 
 void right() {
-  motorSpeedLeft = maxSpeed;
-  motorSpeedRight = 0;
-  analogWrite(pwm1, motorSpeedLeft);
+  motorSpeedLeft = 0;
+  motorSpeedRight = maxSpeed;
+  analogWrite(pwm1, 0);
   analogWrite(pwm2, 0);
-  analogWrite(pwm3, 0);
+  analogWrite(pwm3, maxSpeedRight);
   analogWrite(pwm4, 0);
 }
 
 void left() {
-  motorSpeedRight = maxSpeed;
-  motorSpeedLeft = 0;
-  analogWrite(pwm1, 0);
+  motorSpeedRight = 0;
+  motorSpeedLeft = maxSpeed;
+  analogWrite(pwm1, maxSpeed);
   analogWrite(pwm2, 0);
-  analogWrite(pwm3, motorSpeedRight);
+  analogWrite(pwm3, 0);
   analogWrite(pwm4, 0);
 }
 
@@ -235,13 +239,13 @@ void setup() {
   //dc motor outputs to zero
   outputsToZero();
 
-  // attach gear servo
-  gearServo.attach(pwm5);
-  gearServo.write(gearStop);
-
   // attach pulley servo
-  pulleyServo.attach(pwm6);
+  pulleyServo.attach(pwm5);
   pulleyServo.write(pulleyStop);
+  
+  // attach gear servo
+  gearServo.attach(pwm6);
+  gearServo.write(gearStop);
 }
 
 
