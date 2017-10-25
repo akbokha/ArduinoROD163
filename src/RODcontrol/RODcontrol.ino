@@ -13,10 +13,10 @@ int pwm6 = 11;
 
 int ledPin = 13;
 
-int extendArm = 19;
-int returnArm = 23;
-int lowerPlate = 8;
-int risePlate = 11;
+int extendArmValue = 19;
+int returnArmValue = 23;
+int lowerPlateValue = 8;
+int risePlateValue = 11;
 
 // pins on Arduino that will control servo through signals
 int gimbalPinX = A0;
@@ -165,25 +165,25 @@ void turnLeftPulleyServo() {
 
 void extendArm() {
   gearServo.write(gearLeft);
-  delay(extendArm * gearDelay);
+  delay(extendArmValue * gearDelay);
   gearServo.write(gearStop);
 }
 
 void returnArm() {
   gearServo.write(gearRight);
-  delay(returnArm * gearDelay);
+  delay(returnArmValue * gearDelay);
   gearServo.write(gearStop);
 }
 
 void lowerPlate() {
   pulleyServo.write(pulleyLeft);
-  delay(lowerPlate * pulleyDelay);
+  delay(lowerPlateValue * pulleyDelay);
   pulleyServo.write(pulleyStop);
 }
 
 void risePlate() {
   pulleyServo.write(pulleyRight);
-  delay(risePlate * pulleyDelay);
+  delay(risePlateValue * pulleyDelay);
   pulleyServo.write(pulleyStop);
 }
 
