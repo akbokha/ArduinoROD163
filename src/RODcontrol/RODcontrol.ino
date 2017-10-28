@@ -13,10 +13,11 @@ int pwm6 = 11;
 
 int ledPin = 13;
 
-int extendArmValue = 19;
-int returnArmValue = 23;
-int lowerPlateValue = 8;
-int risePlateValue = 11;
+// delay multipliers for extension of arm / lowering of boarding plate
+int extendArmValue = 23;
+int returnArmValue = 19;
+int lowerPlateValue = 21;
+int risePlateValue = 17;
 
 // pins on Arduino that will control servo through signals
 int gimbalPinX = A0;
@@ -34,10 +35,11 @@ int gimbalPosX = 90;
 int gimbalPosY = 90;
 
 // dc motor speed and (de)acceleration
-int maxSpeed = 120; // the max speed we want to be able to drive
+int maxSpeed = 255; // the max speed we want to be able to drive
+int forward = 150;
 int motorSpeedLeft; // speed left motor
 int motorSpeedRight; // speed right motor
-const int motorSpeedStep = 20; // (de)acceleration
+const int motorSpeedStep = 20; // (de)accelerationi
 
 // gear servo stop value and step value
 int gearStop = 95;
@@ -46,7 +48,7 @@ int gearRight = 100;
 int gearDelay = 1000; // in ms
 
 // gear servo stop value and step value
-int pulleyStop = 95; //tbd
+int pulleyStop = 94; //tbd
 int pulleyLeft = 90; //tbd
 int pulleyRight = 100; // tbd
 int pulleyDelay = 1000; // in ms ; tbd
@@ -61,8 +63,8 @@ void outputsToZero() {
 }
 
 void fullForward() {
-  motorSpeedLeft = maxSpeed;
-  motorSpeedRight = maxSpeed;
+  motorSpeedLeft = forward;
+  motorSpeedRight = forward;
   analogWrite(pwm1, motorSpeedLeft);
   analogWrite(pwm2, 0);
   analogWrite(pwm3, motorSpeedRight);
@@ -79,20 +81,20 @@ void fullBackward() {
 }
 
 void right() {
-  motorSpeedLeft = 0;
-  motorSpeedRight = maxSpeed;
-  analogWrite(pwm1, 0);
+  motorSpeedLeft = maxSpeed;
+  motorSpeedRight = 0;
+  analogWrite(pwm1, motorSpeedLeft);
   analogWrite(pwm2, 0);
-  analogWrite(pwm3, motorSpeedRight);
+  analogWrite(pwm3, 0);
   analogWrite(pwm4, 0);
 }
 
 void left() {
-  motorSpeedRight = 0;
-  motorSpeedLeft = maxSpeed;
-  analogWrite(pwm1, motorSpeedLeft);
+  motorSpeedRight = maxSpeed;
+  motorSpeedLeft = 0;
+  analogWrite(pwm1, 0);
   analogWrite(pwm2, 0);
-  analogWrite(pwm3, 0);
+  analogWrite(pwm3, motorSpeedRight);
   analogWrite(pwm4, 0);
 }
 
@@ -106,8 +108,8 @@ void accelerateForward() {
 }
 
 void accelerateBackward() {
-  motorSpeedRight -= motorSpeedStep;
-  motorSpeedLeft -= motorSpeedStep;
+  motorSpeedRight += motorSpeedStep;
+  motorSpeedLeft += motorSpeedStep;
   analogWrite(pwm1, 0);
   analogWrite(pwm2, motorSpeedLeft);
   analogWrite(pwm3, 0);
@@ -225,10 +227,10 @@ void processInputBuffer(char cmd) {
     case 'd': // decrease posX w/ 5 degrees
       adjustGimbal((- GimbalStepX), false);
     break;
-    case 'm': // make gear servo turn right
+    case 'b': // make gear servo turn right
       turnRightGearServo();
     break;
-    case 'b': // make gear servo turn left
+    case 'm': // make gear servo turn left
       turnLeftGearServo();
     break;
     case 'n': // stop gearServo;
@@ -267,6 +269,8 @@ void setup() {
   Serial1.begin(115200); // Ethernet / Wi-Fi Communication
   // Serial.begin(9600); // USB comminication
 
+  //dc motor outputs to zero
+  outputsToZero();
   // clear input buffer
   while (Serial1.available()) {
     Serial1.read();
@@ -276,9 +280,6 @@ void setup() {
   gimbalServoX.attach(gimbalPinX);
   gimbalServoY.attach(gimbalPinY);
   gimbalStandardPosition(); // move gimbal to standard position
-
-  //dc motor outputs to zero
-  outputsToZero();
 
   // attach pulley servo
   pulleyServo.attach(pwm5);
